@@ -1,21 +1,39 @@
-import Replicate from "replicate";
+import axios from "axios";
 
 export async function POST(req) {
   try {
     const { prompt } = await req.json();
 
-    const replicate = new Replicate({
-      auth: process.env.REPLICATE_API_TOKEN,
-    });
+    if (!prompt) {
+      return new Response(JSON.stringify({ error: "Prompt is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-    const output = await replicate.run("black-forest-labs/flux-1.1-pro-ultra", {
-      input: { prompt, aspect_ratio: "3:2" },
-    });
+    const response = await axios.post(
+      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+      { inputs: prompt },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        responseType: "arraybuffer",
+      }
+    );
 
-    return new Response(JSON.stringify({ output }), { status: 200 });
+    const base64Image = Buffer.from(response.data, "binary").toString("base64");
+
+    return new Response(
+      JSON.stringify({ output: `data:image/png;base64,${base64Image}` }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Error generating image:", error);
+    return new Response(JSON.stringify({ error: "Failed to generate image" }), {
       status: 500,
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
