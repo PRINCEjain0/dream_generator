@@ -48,7 +48,7 @@ export default function ImageGenerator() {
           placeholder="Enter a prompt..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          className="flex-1 p-3 border rounded-lg shadow-sm focus:ring focus:ring-blue-300 outline-none"
+          className="flex-1 p-3 bg-amber-400 border rounded-lg shadow-sm focus:ring focus:ring-blue-300 outline-none"
         />
         <button
           onClick={generateImage}
@@ -70,7 +70,7 @@ export default function ImageGenerator() {
           <img
             src={image}
             alt="Generated"
-            className="w-96 rounded-lg shadow-lg border border-gray-300"
+            className="w-96 rounded-lg shadow-lg border border-green-300"
           />
         </div>
       )}

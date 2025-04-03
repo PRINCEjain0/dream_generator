@@ -12,7 +12,7 @@ export async function POST(req) {
     }
 
     const response = await axios.post(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+      "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
       { inputs: prompt },
       {
         headers: {
